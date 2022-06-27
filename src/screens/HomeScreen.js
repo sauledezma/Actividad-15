@@ -1,12 +1,14 @@
 
 import React, { useEffect, useState } from 'react';
-import {Text, FlatList, SafeAreaView, TouchableOpacity,  Image} from 'react-native';
+import { FlatList, SafeAreaView} from 'react-native';
 import db from './../../src/firebase/config';
-import {ref, onValue, set} from "firebase/database";
+import {ref, onValue} from "firebase/database";
+import Led from '../components/Led';
 
 export default function HomeScreen({ navigation }) {
 
   const [listDevices, setlistDevices] = useState([]);
+
 
   const  readData = () => {
     const dbRef = ref(db, 'devices');
@@ -19,7 +21,6 @@ export default function HomeScreen({ navigation }) {
     })
   }
 
-
   useEffect(()=>{
     readData();
   }, [])
@@ -30,23 +31,8 @@ export default function HomeScreen({ navigation }) {
           data={listDevices}
           keyExtractor={(item, index) => String(index)}
           renderItem={({ item }) => (
-            <>
-              <TouchableOpacity   onPress={ () => {
-                      set(ref(db, 'devices/' + item.id), {
-                          area: item.area,
-                          status: !item.status,
-                          pin : item.pin
-                        });
-                    }}>
-                  <Image source={ 
-                          item.status ?  require('../../img/imagen_on.png') 
-                                  : require('../../img/imagen_off.png') } 
-                        style={{ width: 60, height: 60}}
-                    />
-              </TouchableOpacity> 
-            <Text>{item.area}  | { String(item.status) }</Text>
-            </>
-          )}
+            <Led item={item} navigation={navigation}
+          />)}
       />
     </SafeAreaView>
   );
