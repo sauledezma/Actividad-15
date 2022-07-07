@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { FlatList, SafeAreaView} from 'react-native';
+import { FlatList, SafeAreaView,Button} from 'react-native';
 import db from './../../src/firebase/config';
 import {ref, onValue} from "firebase/database";
 import Led from '../components/Led';
@@ -27,6 +27,9 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView>
+       <Button onPress={() =>{
+        navigation.navigate('Create');
+      }} title="Crear" />
       <FlatList
           data={listDevices}
           keyExtractor={(item, index) => String(index)}

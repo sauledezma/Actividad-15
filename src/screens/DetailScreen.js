@@ -1,12 +1,14 @@
 import React,  { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Button, SafeAreaView,TextInput, Switch } from "react-native";
+import { View, StyleSheet, Text, Button, SafeAreaView, TextInput, Switch } from "react-native";
 import db from './../../src/firebase/config';
-import {ref, set} from "firebase/database";
+import {ref, set, remove} from "firebase/database";
 
-export default function SettingsScreen({ route, navigation }) {
+export default function DetailScreen({ route, navigation }) {
 
    const { item } = route.params;
+
    const [status, setStatus] = useState(false);
+
    const [areaText, setAreaText] = useState("");
    const [pinText, setPinText] = useState("");
    const [statusText, setStatusText] = useState(false);
@@ -24,10 +26,13 @@ export default function SettingsScreen({ route, navigation }) {
       <View style={{alignItems:"left",flex:1, justifyContent: 'space-between'}}>
       
       <Text>Id: {item.id}</Text>
+
       <Text>Area:</Text>
       <TextInput onChangeText={setAreaText} value={areaText} editable={status ? true : false}/>
+      
       <Text>Pin:</Text>
       <TextInput onChangeText={setPinText} value={pinText} editable={status ? true : false}/>
+      
       <Text>Estatus:</Text>
       <Switch
         trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -49,7 +54,24 @@ export default function SettingsScreen({ route, navigation }) {
         }
       }} title={status ? "Guardar" : "Editar"}/>
 
+      <Button title="Eliminar" disabled={status ? false : true} 
+          color="#CC0000"
+          onPress={() =>{
+            if(status == true){
+              remove(ref(db, 'devices/' + item.id), {
+                              area: areaText,
+                              status: statusText,
+                              pin : pinText
+                            });
+              setStatus(false)
+              navigation.navigate('Home');
+            }
+          }}
+        
+      />
+
       <Button onPress={() =>{
+        setStatus(false);
         navigation.navigate('Home');
       }} title="REGRESAR" />
       
